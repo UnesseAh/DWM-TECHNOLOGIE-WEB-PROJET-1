@@ -9,9 +9,11 @@
     <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="index.php"><i class="fas fa-address-book"></i> Contact Manager</a>
+            <a class="navbar-brand" href="index.php">
+                <i class="fas fa-address-book text-primary"></i> Contact Manager
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -20,11 +22,8 @@
                     <li class="nav-item">
                         <a class="nav-link" href="index.php">Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link btn btn-primary btn-sm text-white ms-lg-2" href="ajouter.php">+ Add Contact</a>
-                    </li>
-                </ul>
+                    </ul>
             </div>
         </div>
     </nav>
-    <div class="container">
+    <div class="container py-4">

@@ -78,4 +78,27 @@ include 'includes/header.php';
     </div>
 </div>
 
+<script>
+document.querySelector('form').addEventListener('submit', function(e) {
+    let email = document.querySelector('input[name="email"]').value;
+    let prenom = document.querySelector('input[name="prenom"]').value;
+    let nom = document.querySelector('input[name="nom"]').value;
+    
+    // Basic JS Validation
+    if (prenom.trim() === "" || nom.trim() === "") {
+        alert("Names cannot be empty");
+        e.preventDefault(); // Stop form submission
+        return;
+    }
+    
+    // Email regex validation
+    let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+        alert("Please enter a valid email address");
+        e.preventDefault();
+        return;
+    }
+});
+</script>
+
 <?php include 'includes/footer.php'; ?>
