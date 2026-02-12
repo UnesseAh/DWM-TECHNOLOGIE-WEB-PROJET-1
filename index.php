@@ -1,7 +1,21 @@
 <?php 
 require_once 'config/database.php';
 
-$query = $pdo->query("SELECT * FROM contacts ORDER BY date_creation DESC");
+$limit = 10;
+
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+if ($page < 1) $page = 1;
+
+$offset = ($page - 1) * $limit;
+
+$total_stmt = $pdo->query("SELECT COUNT(*) FROM contacts");
+$total_contacts = $total_stmt->fetchColumn();
+$total_pages = ceil($total_contacts / $limit);
+
+$query = $pdo->prepare("SELECT * FROM contacts ORDER BY nom ASC LIMIT :limit OFFSET :offset");
+$query->bindValue(':limit', $limit, PDO::PARAM_INT);
+$query->bindValue(':offset', $offset, PDO::PARAM_INT);
+$query->execute();
 $contacts = $query->fetchAll();
 
 include 'includes/header.php'; 
@@ -13,6 +27,11 @@ include 'includes/header.php';
 </div>
 
 <div class="table-container">
+    <div class="mb-3">
+    <div class="input-group">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search by name, email or phone...">
+    </div>
+</div>
     <table class="table table-hover">
         <thead class="table-light">
             <tr>
@@ -52,6 +71,39 @@ include 'includes/header.php';
             <?php endif; ?>
         </tbody>
     </table>
+    <?php if ($total_pages > 1): ?>
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        <li class="page-item <?php echo ($page <= 1) ? 'disabled' : ''; ?>">
+            <a class="page-link" href="?page=<?php echo $page - 1; ?>">Previous</a>
+        </li>
+
+        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+            <li class="page-item <?php echo ($page == $i) ? 'active' : ''; ?>">
+                <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+            </li>
+        <?php endfor; ?>
+
+        <li class="page-item <?php echo ($page >= $total_pages) ? 'disabled' : ''; ?>">
+            <a class="page-link" href="?page=<?php echo $page + 1; ?>">Next</a>
+        </li>
+    </ul>
+</nav>
+<?php endif; ?>
 </div>
 
+<script>
+document.getElementById('searchInput').addEventListener('keyup', function() {
+    let query = this.value;
+    
+    fetch('actions/rechercher.php?q=' + query)
+        .then(response => response.text())
+        .then(data => {
+            document.querySelector('tbody').innerHTML = data;
+        })
+        .catch(error => console.error('Error:', error));
+});
+</script>
+
 <?php include 'includes/footer.php'; ?>
+
